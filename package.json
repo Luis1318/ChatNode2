@@ -1,20 +1,36 @@
-{
-  "name": "chatnodealex",
-  "version": "1.0.0",
-  "description": "Chat en nodejs",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "TU NOMBRE COMPLETO",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.21.2",
-    "socket.io": "^4.8.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Práctica de evaluación Socket</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <div id="panel-bienvenida">
+        <h2>Práctica de evaluación usando Sockets de comunicación - Ing. Alex R.G.</h2>
+        <input id="persona" type="text" placeholder="Ingresa tu nombre">
+        <button id="ingresar" onclick="ingresarAlChat()">Ingresar al chat</button>
+    </div>
+
+    <div id="app-chat" style="display:none;">
+        <h2>Práctica de evaluación 1er. parcial - Ing. Alex R.G.</h2>
+        <h2 class="nube box">Chat con socket</h2>
+        <div id="ventana-mensajes">
+            <div id="output"></div>
+            <div id="escribiendo-mensaje"></div>
+        </div>
+        <input id="usuario" type="text" placeholder="Tu nombre">
+        <input id="mensaje" type="text" placeholder="Ingresa un mensaje">
+        <div class="acciones">
+            <button id="adjuntar" type="button" title="Grabar nota de voz">🎤 Grabar Audio</button>
+            <button id="enviar">Enviar</button>
+        </div>
+    </div>
+
+    <script src="/chat.js"></script>
+
+</body>
+</html>
