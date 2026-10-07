@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Práctica de evaluación Socket</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- El cliente de socket.io lo sirve el propio servidor (misma versión que el servidor) -->
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
@@ -25,9 +24,11 @@
         </div>
         <input id="usuario" type="text" placeholder="Tu nombre">
         <input id="mensaje" type="text" placeholder="Ingresa un mensaje">
+        
         <div class="acciones">
-            <input id="archivo" type="file" hidden>
-            <button id="adjuntar" type="button" title="Adjuntar archivo (máx. 25 MB)">📎 Adjuntar archivo</button>
+            <input id="archivo" type="file" accept="image/*,video/*" hidden>
+            <button id="adjuntar-archivo" type="button" title="Enviar foto o video">📷 Enviar Foto/Video</button>
+            <button id="adjuntar-audio" type="button" title="Grabar nota de voz">🎤 Audio</button>
             <button id="enviar">Enviar</button>
         </div>
     </div>
