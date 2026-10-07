@@ -84,7 +84,7 @@ h2 {
 #output audio { display: block; margin-top: 8px; width: 100%; max-width: 250px; }
 #output a.descarga { display: inline-block; margin-top: 6px; color: #ff007f; text-decoration: none; font-size: 13px; }
 
-input {
+input[type="text"] {
     padding: 10px;
     box-sizing: border-box;
     background: #141b2d;
@@ -95,21 +95,21 @@ input {
     border-bottom: 1px solid rgba(0, 243, 255, 0.2);
     font-size: 14px;
 }
-input:focus { outline: 0; background: #182238; border-color: #00f3ff; }
+input[type="text"]:focus { outline: 0; background: #182238; border-color: #00f3ff; }
 
 .acciones {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 3px;
     padding: 5px;
     background: #0b0f19;
 }
 
 .acciones button {
     flex: 1;
-    min-width: 70px;
-    font-size: 12px;
-    padding: 8px 4px;
+    min-width: 60px;
+    font-size: 11px;
+    padding: 8px 2px;
 }
 
 button {
@@ -127,12 +127,23 @@ button:hover {
     color: #0b0f19; 
 }
 
+/* Estilos personalizados para cada botón de acción */
 #adjuntar-archivo { 
+    background: #121826; 
+    border-color: #00f3ff; 
+    color: #00f3ff; 
+}
+#adjuntar-archivo:hover {
+    background: #00f3ff;
+    color: #0b0f19;
+}
+
+#adjuntar-multimedia { 
     background: #121826; 
     border-color: #ff007f; 
     color: #ff007f; 
 }
-#adjuntar-archivo:hover {
+#adjuntar-multimedia:hover {
     background: #ff007f;
     color: #ffffff;
 }
@@ -150,6 +161,7 @@ button:hover {
 #enviar {
     background: #00f3ff;
     color: #0b0f19;
+    border-color: #00f3ff;
 }
 
 .nube {
@@ -161,4 +173,4 @@ button:hover {
     color: #e0fbfc;
     font-size: 12px;
 }
-.box { float: none; text-align: center; margin: 5px auto; display: block; } center; margin: 5px auto; display: block; }
+.box { float: none; text-align: center; margin: 5px auto; display: block; } auto; display: block; } center; margin: 5px auto; display: block; }
