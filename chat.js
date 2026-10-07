@@ -6,14 +6,15 @@ var persona = document.getElementById('persona'),
     usuario = document.getElementById('usuario'),
     mensaje = document.getElementById('mensaje'),
     botonEnviar = document.getElementById('enviar'),
-    botonAudio = document.getElementById('adjuntar'),
+    botonAudio = document.getElementById('adjuntar-audio'),
+    botonArchivo = document.getElementById('adjuntar-archivo'),
+    inputArchivo = document.getElementById('archivo'),
     escribiendoMensaje = document.getElementById('escribiendo-mensaje'),
     output = document.getElementById('output'),
     ventana = document.getElementById('ventana-mensajes');
 
 var MAX_BYTES = 25 * 1024 * 1024; // 25 MB
 
-/* ---------- Sonido (Web Audio API) ---------- */
 var audioCtx = null;
 function sonido() {
     try {
@@ -30,10 +31,9 @@ function sonido() {
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.25);
-    } catch (e) { /* ignorar si no hay soporte */ }
+    } catch (e) {}
 }
 
-/* ---------- Enviar mensaje de texto ---------- */
 function enviarMensaje() {
     if (mensaje.value.trim()) {
         socket.emit('chat', {
@@ -57,6 +57,30 @@ mensaje.addEventListener('keyup', function (e) {
     }
 });
 
+/* ---------- Enviar Foto / Video ---------- */
+botonArchivo.addEventListener('click', function () { inputArchivo.click(); });
+
+inputArchivo.addEventListener('change', function () {
+    var file = inputArchivo.files[0];
+    if (!file) return;
+    if (file.size > MAX_BYTES) {
+        alert('El archivo es demasiado grande (máximo 25 MB).');
+        inputArchivo.value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+        socket.emit('archivo', {
+            usuario: usuario.value,
+            nombre: file.name,
+            tipo: file.type || 'application/octet-stream',
+            buffer: reader.result
+        });
+        inputArchivo.value = '';
+    };
+    reader.readAsArrayBuffer(file);
+});
+
 /* ---------- Grabación de Audio en Vivo ---------- */
 var mediaRecorder;
 var audioChunks = [];
@@ -75,10 +99,6 @@ botonAudio.addEventListener('click', async function () {
 
             mediaRecorder.onstop = function () {
                 var audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                if (audioBlob.size > MAX_BYTES) {
-                    alert('El audio es demasiado grande.');
-                    return;
-                }
                 var reader = new FileReader();
                 reader.onload = function () {
                     socket.emit('archivo', {
@@ -93,20 +113,21 @@ botonAudio.addEventListener('click', async function () {
 
             mediaRecorder.start();
             grabando = true;
-            botonAudio.textContent = '⏹ Detener y Enviar';
+            botonAudio.textContent = '⏹ Detener';
             botonAudio.style.background = '#ff007f';
+            botonAudio.style.color = '#fff';
         } catch (err) {
-            alert('No se pudo acceder al micrófono.');
+            alert('No se pudo acceder al micrófono. Recuerda que los navegadores móviles requieren HTTPS o localhost para usar el micrófono.');
         }
     } else {
         mediaRecorder.stop();
         grabando = false;
-        botonAudio.textContent = '🎤 Grabar Audio';
+        botonAudio.textContent = '🎤 Audio';
         botonAudio.style.background = '';
+        botonAudio.style.color = '';
     }
 });
 
-/* ---------- Recibir ---------- */
 function agregarMensaje(p) {
     output.appendChild(p);
     ventana.scrollTop = ventana.scrollHeight;
@@ -132,9 +153,18 @@ socket.on('archivo', function (data) {
     var strong = document.createElement('strong');
     strong.textContent = data.usuario + ': ';
     p.appendChild(strong);
-    p.appendChild(document.createTextNode('🎙 Nota de voz / Archivo: ' + data.nombre));
+    p.appendChild(document.createTextNode('📎 ' + data.nombre));
 
-    if (data.tipo.indexOf('audio/') === 0) {
+    if (data.tipo.indexOf('image/') === 0) {
+        var img = document.createElement('img');
+        img.src = url;
+        p.appendChild(img);
+    } else if (data.tipo.indexOf('video/') === 0) {
+        var video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        p.appendChild(video);
+    } else if (data.tipo.indexOf('audio/') === 0) {
         var audio = document.createElement('audio');
         audio.src = url;
         audio.controls = true;
@@ -165,7 +195,6 @@ socket.on('typing', function (data) {
     }
 });
 
-/* ---------- Entrar al chat ---------- */
 function ingresarAlChat() {
     if (persona.value.trim()) {
         panelBienvenida.style.display = 'none';
