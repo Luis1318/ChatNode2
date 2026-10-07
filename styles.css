@@ -107,7 +107,7 @@ input:focus { outline: 0; background: #182238; border-color: #00f3ff; }
 
 .acciones button {
     flex: 1;
-    min-width: 75px;
+    min-width: 70px;
     font-size: 12px;
     padding: 8px 4px;
 }
@@ -132,11 +132,21 @@ button:hover {
     border-color: #ff007f; 
     color: #ff007f; 
 }
+#adjuntar-archivo:hover {
+    background: #ff007f;
+    color: #ffffff;
+}
+
 #adjuntar-audio {
     background: #121826;
     border-color: #ffe600;
     color: #ffe600;
 }
+#adjuntar-audio:hover {
+    background: #ffe600;
+    color: #0b0f19;
+}
+
 #enviar {
     background: #00f3ff;
     color: #0b0f19;
@@ -151,4 +161,4 @@ button:hover {
     color: #e0fbfc;
     font-size: 12px;
 }
-.box { float: none; text-align: center; margin: 5px auto; display: block; }
+.box { float: none; text-align: center; margin: 5px auto; display: block; } center; margin: 5px auto; display: block; }
