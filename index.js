@@ -5,10 +5,11 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 const server = app.listen(PORT, '0.0.0.0', function () {
-  console.log('Servidor corriendo en http://localhost:' + PORT);
+  console.log('Servidor corriendo en http://0.0.0.0:' + PORT);
 });
 
-app.use(express.static('public'));
+// Servir archivos estáticos desde la misma carpeta del proyecto
+app.use(express.static(__dirname));
 
 // maxHttpBufferSize: permite enviar archivos de hasta 25 MB
 const io = socket(server, { maxHttpBufferSize: 25 * 1024 * 1024 });
