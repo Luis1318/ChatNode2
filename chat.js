@@ -57,7 +57,7 @@ mensaje.addEventListener('keyup', function (e) {
     }
 });
 
-/* ---------- Enviar Foto / Video ---------- */
+/* ---------- Enviar cualquier tipo de archivo (PDF, Word, Excel, etc.) ---------- */
 botonArchivo.addEventListener('click', function () { inputArchivo.click(); });
 
 inputArchivo.addEventListener('change', function () {
@@ -81,12 +81,19 @@ inputArchivo.addEventListener('change', function () {
     reader.readAsArrayBuffer(file);
 });
 
-/* ---------- Grabación de Audio en Vivo ---------- */
+/* ---------- Grabación o Respaldo de Audio en Vivo ---------- */
 var mediaRecorder;
 var audioChunks = [];
 var grabando = false;
 
 botonAudio.addEventListener('click', async function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        // Fallback para celulares con HTTP donde el navegador bloquea el micrófono
+        alert('Tu navegador bloquea el micrófono por seguridad (requiere HTTPS). Se abrirá el selector para que elijas un archivo de audio guardado.');
+        inputArchivo.click();
+        return;
+    }
+
     if (!grabando) {
         try {
             var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -117,7 +124,9 @@ botonAudio.addEventListener('click', async function () {
             botonAudio.style.background = '#ff007f';
             botonAudio.style.color = '#fff';
         } catch (err) {
-            alert('No se pudo acceder al micrófono. Recuerda que los navegadores móviles requieren HTTPS o localhost para usar el micrófono.');
+            // Si el usuario deniega el permiso o el navegador lo bloquea, permitimos subir audio guardado
+            alert('No se pudo acceder al micrófono. Selecciona un archivo de audio de tu dispositivo.');
+            inputArchivo.click();
         }
     } else {
         mediaRecorder.stop();
