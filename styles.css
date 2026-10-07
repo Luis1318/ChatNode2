@@ -1,56 +1,69 @@
-body { font-family: 'Nunito', sans-serif; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0b0f19;
+    color: #00f3ff;
+}
 
 h2 {
-    font-size: 18px;
-    padding: 10px 20px;
-    color: #337ab7;
-    text-align: center;
-    font-family: Tahoma, Geneva, sans-serif;
-}
-
-#panel-bienvenida { padding: 20% 20%; }
-
-#usuario {
-    color: #DE9631;
-    font-weight: bold;
     font-size: 20px;
-    border: 1px solid #ddd;
+    padding: 15px 20px;
+    color: #00f3ff;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
 }
 
-#persona { border: 1px solid #ddd; }
+#panel-bienvenida { padding: 15% 15%; text-align: center; }
+
+#usuario, #persona {
+    background-color: #121826;
+    color: #00f3ff;
+    font-weight: bold;
+    font-size: 16px;
+    border: 1px solid #00f3ff;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
+}
 
 #app-chat {
-    max-width: 600px;
+    max-width: 650px;
     margin: 30px auto;
-    border: 1px solid #ddd;
-    box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
-    border-radius: 2px;
+    background: #101522;
+    border: 1px solid rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 #ventana-mensajes {
     height: 400px;
     overflow: auto;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
+    background: #0d111a;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
 }
 
 #output p {
-    padding: 14px 0px;
-    margin: 0 20px;
-    border-bottom: 1px solid #e9e9e9;
-    color: #555;
+    padding: 12px 15px;
+    margin: 0 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #c0c8e0;
     word-wrap: break-word;
 }
 
 /* Cuando el usuario está escribiendo un mensaje */
 #escribiendo-mensaje p {
-    color: #aaaaaa;
-    padding: 14px 0px;
-    margin: 0 20px;
+    color: #ff007f;
+    padding: 10px 15px;
+    margin: 0 15px;
+    font-style: italic;
+    text-shadow: 0 0 5px rgba(255, 0, 127, 0.4);
 }
 
 /* Nombre de usuario */
-#output strong { color: #337ab7; }
+#output strong { color: #00f3ff; }
 
 /* Archivos adjuntos */
 #output img, #output video {
@@ -59,63 +72,72 @@ h2 {
     max-height: 240px;
     margin-top: 8px;
     border-radius: 4px;
+    border: 1px solid rgba(0, 243, 255, 0.3);
 }
 #output audio { display: block; margin-top: 8px; max-width: 100%; }
-#output a.descarga { display: inline-block; margin-top: 6px; color: #337ab7; }
+#output a.descarga { display: inline-block; margin-top: 6px; color: #ff007f; text-decoration: none; }
+#output a.descarga:hover { text-decoration: underline; }
 
 input {
-    padding: 10px 20px;
+    padding: 12px 20px;
     box-sizing: border-box;
-    background: #eee;
+    background: #141b2d;
     border: 0;
     display: block;
     width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    font-family: Nunito;
-    font-size: 16px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 15px;
 }
-input:focus { outline: 0; }
+input:focus { outline: 0; background: #182238; border-color: #00f3ff; }
 
 .acciones { display: flex; }
 .acciones button { width: 50%; }
 
 button {
-    background: #337ab7;
-    color: #ffffff;
-    font-size: 18px;
-    border: 0;
-    padding: 12px 0;
+    background: #121826;
+    color: #00f3ff;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid #00f3ff;
+    padding: 14px 0;
     width: 100%;
     cursor: pointer;
-    border: 1px solid transparent;
-    border-color: #2e6da4;
-    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
-button:hover { background: #246AA6; color: #FAF7F7; }
-#adjuntar { background: #5cb85c; border-color: #4cae4c; }
-#adjuntar:hover { background: #449d44; }
+button:hover { 
+    background: #00f3ff; 
+    color: #0b0f19; 
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+}
+
+#adjuntar { 
+    background: #121826; 
+    border-color: #ff007f; 
+    color: #ff007f; 
+}
+#adjuntar:hover { 
+    background: #ff007f; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+}
 
 .nube {
-    background-color: #337ab7;
-    border-radius: 5px;
-    box-shadow: 0 0 6px #B2B2B2;
+    background-color: rgba(0, 243, 255, 0.1);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
     display: inline-block;
     padding: 10px 18px;
     position: relative;
     vertical-align: top;
-    color: #ffffff;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: #e0fbfc;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 .nube::before {
-    background-color: #337ab7;
-    content: "\00a0";
-    display: block;
-    height: 16px;
-    position: absolute;
-    top: 11px;
-    transform: rotate(29deg) skew(-35deg);
-    width: 20px;
+    display: none; /* Simplificado para un look más limpio y moderno */
 }
-.box { float: right; margin: 5px 45px 5px 20px; }
-.box::before { box-shadow: -2px 2px 2px 0 rgba(178,178,178,.4); left: -9px; }
+.box { float: right; margin: 5px 15px 5px 20px; }
