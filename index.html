@@ -26,8 +26,10 @@
         <input id="mensaje" type="text" placeholder="Ingresa un mensaje">
         
         <div class="acciones">
-            <input id="archivo" type="file" accept="image/*,video/*" hidden>
-            <button id="adjuntar-archivo" type="button" title="Enviar foto o video">📷 Enviar Foto/Video</button>
+            <!-- Input oculto que acepta cualquier tipo de archivo (PDF, Word, Excel, etc.) -->
+            <input id="archivo" type="file" hidden>
+            
+            <button id="adjuntar-archivo" type="button" title="Enviar documento o archivo">📁 Archivo</button>
             <button id="adjuntar-audio" type="button" title="Grabar nota de voz">🎤 Audio</button>
             <button id="enviar">Enviar</button>
         </div>
