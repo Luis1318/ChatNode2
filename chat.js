@@ -1,5 +1,3 @@
-// Sin URL: se conecta automáticamente al servidor que sirvió la página
-// (funciona en localhost y también con la IP pública de AWS)
 var socket = io();
 
 var persona = document.getElementById('persona'),
@@ -8,15 +6,14 @@ var persona = document.getElementById('persona'),
     usuario = document.getElementById('usuario'),
     mensaje = document.getElementById('mensaje'),
     botonEnviar = document.getElementById('enviar'),
-    botonAdjuntar = document.getElementById('adjuntar'),
-    inputArchivo = document.getElementById('archivo'),
+    botonAudio = document.getElementById('adjuntar'),
     escribiendoMensaje = document.getElementById('escribiendo-mensaje'),
     output = document.getElementById('output'),
     ventana = document.getElementById('ventana-mensajes');
 
 var MAX_BYTES = 25 * 1024 * 1024; // 25 MB
 
-/* ---------- Sonido (Web Audio API, no requiere archivos) ---------- */
+/* ---------- Sonido (Web Audio API) ---------- */
 var audioCtx = null;
 function sonido() {
     try {
@@ -33,7 +30,7 @@ function sonido() {
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.25);
-    } catch (e) { /* si el navegador no soporta audio, se ignora */ }
+    } catch (e) { /* ignorar si no hay soporte */ }
 }
 
 /* ---------- Enviar mensaje de texto ---------- */
@@ -60,28 +57,53 @@ mensaje.addEventListener('keyup', function (e) {
     }
 });
 
-/* ---------- Enviar archivo ---------- */
-botonAdjuntar.addEventListener('click', function () { inputArchivo.click(); });
+/* ---------- Grabación de Audio en Vivo ---------- */
+var mediaRecorder;
+var audioChunks = [];
+var grabando = false;
 
-inputArchivo.addEventListener('change', function () {
-    var file = inputArchivo.files[0];
-    if (!file) return;
-    if (file.size > MAX_BYTES) {
-        alert('El archivo es demasiado grande (máximo 25 MB).');
-        inputArchivo.value = '';
-        return;
+botonAudio.addEventListener('click', async function () {
+    if (!grabando) {
+        try {
+            var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = function (event) {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = function () {
+                var audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                if (audioBlob.size > MAX_BYTES) {
+                    alert('El audio es demasiado grande.');
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    socket.emit('archivo', {
+                        usuario: usuario.value,
+                        nombre: 'nota_de_voz.webm',
+                        tipo: 'audio/webm',
+                        buffer: reader.result
+                    });
+                };
+                reader.readAsArrayBuffer(audioBlob);
+            };
+
+            mediaRecorder.start();
+            grabando = true;
+            botonAudio.textContent = '⏹ Detener y Enviar';
+            botonAudio.style.background = '#ff007f';
+        } catch (err) {
+            alert('No se pudo acceder al micrófono.');
+        }
+    } else {
+        mediaRecorder.stop();
+        grabando = false;
+        botonAudio.textContent = '🎤 Grabar Audio';
+        botonAudio.style.background = '';
     }
-    var reader = new FileReader();
-    reader.onload = function () {
-        socket.emit('archivo', {
-            usuario: usuario.value,
-            nombre: file.name,
-            tipo: file.type || 'application/octet-stream',
-            buffer: reader.result // ArrayBuffer (socket.io lo envía como binario)
-        });
-        inputArchivo.value = '';
-    };
-    reader.readAsArrayBuffer(file);
 });
 
 /* ---------- Recibir ---------- */
@@ -97,7 +119,7 @@ socket.on('chat', function (data) {
     var strong = document.createElement('strong');
     strong.textContent = data.usuario + ': ';
     p.appendChild(strong);
-    p.appendChild(document.createTextNode(data.mensaje)); // textNode evita inyección HTML
+    p.appendChild(document.createTextNode(data.mensaje));
     agregarMensaje(p);
 });
 
@@ -110,18 +132,9 @@ socket.on('archivo', function (data) {
     var strong = document.createElement('strong');
     strong.textContent = data.usuario + ': ';
     p.appendChild(strong);
-    p.appendChild(document.createTextNode('📎 ' + data.nombre));
+    p.appendChild(document.createTextNode('🎙 Nota de voz / Archivo: ' + data.nombre));
 
-    if (data.tipo.indexOf('image/') === 0) {
-        var img = document.createElement('img');
-        img.src = url;
-        p.appendChild(img);
-    } else if (data.tipo.indexOf('video/') === 0) {
-        var video = document.createElement('video');
-        video.src = url;
-        video.controls = true;
-        p.appendChild(video);
-    } else if (data.tipo.indexOf('audio/') === 0) {
+    if (data.tipo.indexOf('audio/') === 0) {
         var audio = document.createElement('audio');
         audio.src = url;
         audio.controls = true;
@@ -159,6 +172,6 @@ function ingresarAlChat() {
         appChat.style.display = 'block';
         usuario.value = persona.value.trim();
         usuario.readOnly = true;
-        sonido(); // el clic activa el audio del navegador
+        sonido();
     }
 }
