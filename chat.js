@@ -8,7 +8,9 @@ var persona = document.getElementById('persona'),
     botonEnviar = document.getElementById('enviar'),
     botonAudio = document.getElementById('adjuntar-audio'),
     botonArchivo = document.getElementById('adjuntar-archivo'),
-    inputArchivo = document.getElementById('archivo'),
+    botonMultimedia = document.getElementById('adjuntar-multimedia'),
+    inputArchivo = document.getElementById('input-archivo'),
+    inputMultimedia = document.getElementById('input-multimedia'),
     escribiendoMensaje = document.getElementById('escribiendo-mensaje'),
     output = document.getElementById('output'),
     ventana = document.getElementById('ventana-mensajes');
@@ -57,7 +59,7 @@ mensaje.addEventListener('keyup', function (e) {
     }
 });
 
-/* ---------- Enviar cualquier tipo de archivo (PDF, Word, Excel, etc.) ---------- */
+/* ---------- Enviar documentos generales (PDF, Word, Excel, etc.) ---------- */
 botonArchivo.addEventListener('click', function () { inputArchivo.click(); });
 
 inputArchivo.addEventListener('change', function () {
@@ -81,15 +83,37 @@ inputArchivo.addEventListener('change', function () {
     reader.readAsArrayBuffer(file);
 });
 
-/* ---------- Grabación o Respaldo de Audio en Vivo ---------- */
+/* ---------- Enviar Fotos y Videos ---------- */
+botonMultimedia.addEventListener('click', function () { inputMultimedia.click(); });
+
+inputMultimedia.addEventListener('change', function () {
+    var file = inputMultimedia.files[0];
+    if (!file) return;
+    if (file.size > MAX_BYTES) {
+        alert('El archivo multimedia es demasiado grande (máximo 25 MB).');
+        inputMultimedia.value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+        socket.emit('archivo', {
+            usuario: usuario.value,
+            nombre: file.name,
+            tipo: file.type || 'application/octet-stream',
+            buffer: reader.result
+        });
+        inputMultimedia.value = '';
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+/* ---------- Audio en Vivo / Selector de Audio alternativo ---------- */
 var mediaRecorder;
 var audioChunks = [];
 var grabando = false;
 
 botonAudio.addEventListener('click', async function () {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        // Fallback para celulares con HTTP donde el navegador bloquea el micrófono
-        alert('Tu navegador bloquea el micrófono por seguridad (requiere HTTPS). Se abrirá el selector para que elijas un archivo de audio guardado.');
         inputArchivo.click();
         return;
     }
@@ -124,8 +148,7 @@ botonAudio.addEventListener('click', async function () {
             botonAudio.style.background = '#ff007f';
             botonAudio.style.color = '#fff';
         } catch (err) {
-            // Si el usuario deniega el permiso o el navegador lo bloquea, permitimos subir audio guardado
-            alert('No se pudo acceder al micrófono. Selecciona un archivo de audio de tu dispositivo.');
+            // Si el navegador bloquea el micrófono por HTTP, abre el selector de archivos generales para enviar un audio guardado
             inputArchivo.click();
         }
     } else {
